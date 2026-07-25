@@ -1,11 +1,23 @@
 # Erdős 1110 exceptional pairs
 
-This project formalizes the corrected proof route for the three exceptional
-pairwise-coprime nonrepresentable cases:
+## Scope
+
+This repository formalizes the Lean proof that the three exceptional pairs
+left outside the Yu-Chen range have infinitely many pairwise-coprime
+nonrepresentable integers:
 
 - `(p,q) = (5,2)`, seed `c = 3`;
 - `(p,q) = (9,2)`, seed `c = 5`;
 - `(p,q) = (5,3)`, seed `c = 2`.
+
+It also provides a Lean bridge theorem combining these formalized exceptional
+cases with an explicit hypothesis for Yu-Chen's published range theorem.
+Yu-Chen's range theorem itself is not formalized in this repository, and the
+separate density clause in Erdős Problem 1110 is not addressed here.
+
+Equivalently: this is a formalized closure of the nonrepresentable exceptional
+case gap, plus a conditional all-pairs packaging theorem whose only external
+mathematical input is Yu-Chen's range result.
 
 The proof target is the sequence statement:
 
