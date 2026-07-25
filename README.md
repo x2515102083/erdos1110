@@ -22,7 +22,7 @@ mathematical input is Yu-Chen's range result.
 The proof target is the sequence statement:
 
 ```lean
-∃ f : Nat → Nat, PairwiseCoprimeNonrepSeq p q f
+∃ f : Nat → Nat, Erdos1110.PairwiseCoprimeNonrepSeq p q f
 ```
 
 meaning every `f n` is nonrepresentable, coprime to `p*q`, greater than `1`,
@@ -111,20 +111,20 @@ The core modules prove the combinatorial and recursive construction:
 APIs to prove the remaining synchronized power-window providers:
 
 ```lean
-powerWindow_5_2 : PowerWindowProvider 5 2 3
-powerWindow_9_2 : PowerWindowProvider 9 2 5
-powerWindow_5_3 : PowerWindowProvider 5 3 2
+#check Erdos1110.powerWindow_5_2
+#check Erdos1110.powerWindow_9_2
+#check Erdos1110.powerWindow_5_3
 ```
 
 The unconditional exceptional-pair Lean endpoints are:
 
 ```lean
-exceptional_5_2_unconditional
-exceptional_9_2_unconditional
-exceptional_5_3_unconditional
-exceptional_cases_unconditional
-missingPair_unconditional
-erdos1110_from_yuChen
+#check Erdos1110.exceptional_5_2_unconditional
+#check Erdos1110.exceptional_9_2_unconditional
+#check Erdos1110.exceptional_5_3_unconditional
+#check Erdos1110.exceptional_cases_unconditional
+#check Erdos1110.missingPair_unconditional
+#check Erdos1110.erdos1110_from_yuChen
 ```
 
 `erdos1110_from_yuChen` packages the now-unconditional exceptional cases with
@@ -134,23 +134,23 @@ only external theorem input for the all-pairs corollary.
 The conditional bridge endpoints in `Core.lean` remain available:
 
 ```lean
-exceptional_5_2_from_period_window
-exceptional_9_2_from_period_window
-exceptional_5_3_from_period_window
-exceptional_cases_from_period_window
-exceptional_5_2_from_basic_period_window
-exceptional_9_2_from_basic_period_window
-exceptional_5_3_from_basic_period_window
-exceptional_cases_from_basic_period_window
-exceptional_5_2_from_base_period_window
-exceptional_9_2_from_base_period_window
-exceptional_5_3_from_base_period_window
-exceptional_cases_from_base_period_window
-exceptional_5_2_from_window
-exceptional_9_2_from_window
-exceptional_5_3_from_window
-exceptional_cases_from_window
-exceptional_cases_from_window_amplification
+#check Erdos1110.exceptional_5_2_from_period_window
+#check Erdos1110.exceptional_9_2_from_period_window
+#check Erdos1110.exceptional_5_3_from_period_window
+#check Erdos1110.exceptional_cases_from_period_window
+#check Erdos1110.exceptional_5_2_from_basic_period_window
+#check Erdos1110.exceptional_9_2_from_basic_period_window
+#check Erdos1110.exceptional_5_3_from_basic_period_window
+#check Erdos1110.exceptional_cases_from_basic_period_window
+#check Erdos1110.exceptional_5_2_from_base_period_window
+#check Erdos1110.exceptional_9_2_from_base_period_window
+#check Erdos1110.exceptional_5_3_from_base_period_window
+#check Erdos1110.exceptional_cases_from_base_period_window
+#check Erdos1110.exceptional_5_2_from_window
+#check Erdos1110.exceptional_9_2_from_window
+#check Erdos1110.exceptional_5_3_from_window
+#check Erdos1110.exceptional_cases_from_window
+#check Erdos1110.exceptional_cases_from_window_amplification
 ```
 
 The Mathlib dependency is pinned in `lakefile.toml` to Lean `v4.32.1`'s
