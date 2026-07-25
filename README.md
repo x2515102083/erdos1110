@@ -10,6 +10,11 @@ nonrepresentable integers:
 - `(p,q) = (9,2)`, seed `c = 5`;
 - `(p,q) = (5,3)`, seed `c = 2`.
 
+This is the pairwise-coprime strengthening, not the older ordinary infinitude
+statement. Erdős-Lewin already proved that there are finitely many
+nonrepresentable numbers exactly in the exceptional unordered base pair
+`{p,q} = {2,3}`.
+
 It also provides a Lean bridge theorem combining these formalized exceptional
 cases with an explicit hypothesis for Yu-Chen's published range theorem.
 Yu-Chen's range theorem itself is not formalized in this repository, and the
