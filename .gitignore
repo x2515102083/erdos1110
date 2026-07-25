@@ -1,0 +1,12 @@
+.lake/
+.build/
+build/
+
+*.olean
+*.ilean
+*.trace
+*.c
+
+.DS_Store
+Thumbs.db
+

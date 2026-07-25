@@ -1,0 +1,159 @@
+# Erdős 1110 exceptional pairs
+
+This project formalizes the corrected proof route for the three exceptional
+pairwise-coprime nonrepresentable cases:
+
+- `(p,q) = (5,2)`, seed `c = 3`;
+- `(p,q) = (9,2)`, seed `c = 5`;
+- `(p,q) = (5,3)`, seed `c = 2`.
+
+The proof target is the sequence statement:
+
+```lean
+∃ f : Nat → Nat, PairwiseCoprimeNonrepSeq p q f
+```
+
+meaning every `f n` is nonrepresentable, coprime to `p*q`, greater than `1`,
+and distinct sequence terms are pairwise coprime.
+
+## Building
+
+This repository is a Lean 4/Lake project pinned by `lean-toolchain` to
+`leanprover/lean4:v4.32.1`.
+
+From the repository root:
+
+```bash
+lake exe cache get
+lake build
+```
+
+The main import is:
+
+```lean
+import Erdos1110
+```
+
+## Repository Layout
+
+- `Erdos1110/Basic.lean`: basic definitions, antichains, and divisibility.
+- `Erdos1110/LowRows.lean`: low/high row decompositions and the first
+  synchronization branch.
+- `Erdos1110/Providers.lean`: provider interfaces used by the construction.
+- `Erdos1110/LowRowResidual.lean`: residual induction for low-row
+  synchronization.
+- `Erdos1110/Period.lean`: finite-period provider from the pigeonhole
+  argument.
+- `Erdos1110/Embedding.lean`: embedding nonrepresentability and coprimality.
+- `Erdos1110/Sequence.lean`: recursive infinite pairwise-coprime sequence.
+- `Erdos1110/Exceptional.lean`: concrete seeds and conditional exceptional
+  endpoints.
+- `Erdos1110/YuChenBridge.lean`: range split and Yu-Chen bridge.
+- `Erdos1110/PowerWindow.lean`: Mathlib-backed synchronized power-window
+  proof and unconditional exceptional endpoints.
+- `Erdos1110/Core.lean` and `Erdos1110/Amplification.lean`: compatibility
+  umbrella imports.
+
+## Current checked status
+
+The core modules prove the combinatorial and recursive construction:
+
+- the corrected cross-multiplied embedding bounds for the first concrete
+  examples;
+- the old reciprocal bounds are false for `(5,2)` and `(9,2)`;
+- the exponent-term divisibility bridge
+  `Term p q x ∣ Term p q y ↔ CoordLe x y` under coprime bases;
+- antichain row/column uniqueness and strict coordinate reversal;
+- low/high row filtering, antichain preservation, high-row shifting, and the
+  high-row sum factorization by `q^M`;
+- the generic small-seed lemma: if `0 < c < p` and `c` is not a power of `q`,
+  then `c` is nonrepresentable;
+- the three fixed small nonrepresentability certificates;
+- `ValidBases` and `GoodSeed` for the three exceptional triples;
+- the embedding nonrepresentability theorem from an abstract
+  `LowRowSyncProvider`;
+- the embedding coprimality theorem from `ValidBases` and `GoodSeed`;
+- low-row synchronization, including row-zero existence/uniqueness, the
+  `t = a` branch, and the residual `t < a` induction branch
+  (`lowRowSyncProvider_core`);
+- the generic embedding provider from `ValidBases` and `GoodSeed`, using the
+  proved low-row synchronization;
+- a fully checked product-state construction showing that a fresh-extension
+  provider yields an infinite pairwise-coprime nonrepresentable sequence;
+- direct exceptional sequence theorems conditional only on the corresponding
+  per-case `PeriodProvider` and `PowerWindowProvider`.
+- the reduction from `BasicPeriodProvider` to `PeriodProvider`, proving that
+  one congruent exponent for each modulus automatically gives all multiples.
+- the reduction from single-base period providers
+  `CoprimeBasePeriodProvider p` and `CoprimeBasePeriodProvider q` to
+  `BasicPeriodProvider p q`, by synchronizing the two periods with their
+  product.
+- a self-contained finite-pigeonhole proof of `CoprimeBasePeriodProvider b`
+  for every positive base `b`, and therefore `PeriodProvider p q` for all
+  positive `p,q`.
+- the generic bridge `goodSeedAmplification_of_window`, showing that
+  `ValidBases`, `GoodSeed`, and `PowerWindowProvider` suffice for the infinite
+  pairwise-coprime sequence.
+
+`Erdos1110/PowerWindow.lean` uses Mathlib's irrational-rotation and real-log
+APIs to prove the remaining synchronized power-window providers:
+
+```lean
+powerWindow_5_2 : PowerWindowProvider 5 2 3
+powerWindow_9_2 : PowerWindowProvider 9 2 5
+powerWindow_5_3 : PowerWindowProvider 5 3 2
+```
+
+The unconditional exceptional-pair Lean endpoints are:
+
+```lean
+exceptional_5_2_unconditional
+exceptional_9_2_unconditional
+exceptional_5_3_unconditional
+exceptional_cases_unconditional
+missingPair_unconditional
+erdos1110_from_yuChen
+```
+
+`erdos1110_from_yuChen` packages the now-unconditional exceptional cases with
+the already-formalized range split, leaving Yu-Chen's published range as the
+only external theorem input for the all-pairs corollary.
+
+The conditional bridge endpoints in `Core.lean` remain available:
+
+```lean
+exceptional_5_2_from_period_window
+exceptional_9_2_from_period_window
+exceptional_5_3_from_period_window
+exceptional_cases_from_period_window
+exceptional_5_2_from_basic_period_window
+exceptional_9_2_from_basic_period_window
+exceptional_5_3_from_basic_period_window
+exceptional_cases_from_basic_period_window
+exceptional_5_2_from_base_period_window
+exceptional_9_2_from_base_period_window
+exceptional_5_3_from_base_period_window
+exceptional_cases_from_base_period_window
+exceptional_5_2_from_window
+exceptional_9_2_from_window
+exceptional_5_3_from_window
+exceptional_cases_from_window
+exceptional_cases_from_window_amplification
+```
+
+The Mathlib dependency is pinned in `lakefile.toml` to Lean `v4.32.1`'s
+compatible Mathlib release.  The proof uses:
+
+- `AddCircle.denseRange_zsmul_coe_iff`;
+- `_root_.denseRange_zsmul_iff_nsmul`;
+- `AddCircle.openPartialHomeomorphCoe`;
+- `Real.log_pos`, `Real.log_pow`, `Real.log_div`, and
+  `Real.log_lt_log_iff`;
+- rational cast/order lemmas for the irrationality proof.
+
+The literature-level all-pairs corollary is therefore available from an
+explicit Yu-Chen hypothesis; Yu-Chen's theorem itself is not formalized here.
+
+## License
+
+This project is distributed under the Apache License 2.0.
