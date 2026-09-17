@@ -2,18 +2,42 @@ name: CI
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "proof-erdos1110-all-pairs"]
   pull_request:
     branches: ["main"]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: leanprover/lean-action@v1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          build: true
+          persist-credentials: false
+      - name: Install pinned Lean toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(tr -d '\r\n' < lean-toolchain)" = 'leanprover/lean4:v4.32.1'
+          curl --proto '=https' --tlsv1.2 --retry 3 -fsSL https://github.com/leanprover/lean4/releases/download/v4.32.1/lean-4.32.1-linux.tar.zst -o "$RUNNER_TEMP/lean.tar.zst"
+          mkdir -p "$RUNNER_TEMP/lean"
+          tar --zstd -xf "$RUNNER_TEMP/lean.tar.zst" -C "$RUNNER_TEMP/lean" --strip-components=1
+          echo "$RUNNER_TEMP/lean/bin" >> "$GITHUB_PATH"
+      - name: Test axiom checker
+        run: python3 -m unittest discover -s tests -v
+      - name: Build and audit all-pairs endpoints
+        shell: bash
+        run: |
+          set -euo pipefail
+          lean --version
+          lake exe cache get
+          lake build
+          lake env lean Audit.lean 2>&1 | tee axiom-audit.log
+          python3 scripts/check_axioms.py axiom-audit.log
+          git diff --exit-code -- lean-toolchain lakefile.toml lake-manifest.json
 

@@ -53,6 +53,7 @@ From the repository root:
 ```bash
 lake exe cache get
 lake build
+lake env lean Audit.lean
 ```
 
 The main import is:
@@ -73,6 +74,28 @@ Local verification on 2026-09-17: `lake build` succeeded (8674 jobs).
 The final theorem depends only on `propext`, `Classical.choice`, and `Quot.sound`;
 neither `sorryAx` nor a custom mathematical axiom occurs in its dependencies.
 This is local verification, not independent review or prize approval.
+
+### Automated reproducibility checks
+
+The CI workflow also runs on pushes to `proof-erdos1110-all-pairs` in the
+contributor fork, so verification there does not require upstream PR approval.
+It installs Lean 4.32.1, uses the committed dependency manifest, builds the
+library, and checks all four axiom reports in `Audit.lean` against the allowlist
+`propext`, `Classical.choice`, `Quot.sound`. Missing or duplicate reports and
+unexpected axioms fail the check. Toolchain and dependency files must remain
+unchanged. The checker has regression tests in `tests/`.
+
+To reproduce the audit on Linux or another shell preserving pipeline failures:
+
+```bash
+set -o pipefail
+python3 -m unittest discover -s tests -v
+lake env lean Audit.lean 2>&1 | tee axiom-audit.log
+python3 scripts/check_axioms.py axiom-audit.log
+```
+
+Adding this workflow does not itself establish a successful hosted run. A run
+for the exact published commit must complete before citing it as CI evidence.
 
 ## Repository Layout
 
